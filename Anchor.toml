@@ -1,0 +1,12 @@
+[programs.localnet]
+program_id = "Your_Program_ID"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/devnet.json"
+
+[resgistry]
+url = "https://github.com/solana-labs/anchor"
+
+[anchor]
+lang_version = "0.23.0"

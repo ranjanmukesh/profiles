@@ -1,0 +1,35 @@
+version: '1'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: 1.56.0
+
+      - name: Install dependencies
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          rustup update
+          cargo install --locked --force --path .
+
+      - name: Install Solana toolchain
+        run: |
+          curl -sSf https://release.solana.com/v1.9.0/solana-release-x86_64-unknown-linux-gnu.tar.bz2 | tar -xj -C /tmp
+          sudo mv /tmp/solana*/bin/* /usr/local/bin/
+
+      - name: Install Anchor
+        run: |
+          curl -sSf https://github.com/project-serum/anchor/releases/download/v0.23.0/anchor-v0.23.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          sudo mv anchor*/bin/* /usr/local/bin/
+
+        - name: Build project
+          run: cargo build --release
+
+        - name: Run tests
+          run: cargo test
