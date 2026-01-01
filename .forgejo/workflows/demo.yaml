@@ -2,5 +2,5 @@ on: [push]
 jobs:
   test:
     runs-on: codeberg-tiny 
-  steps:
-    - run: echo "all good!"
+    steps:
+      - run: echo "all good!"
