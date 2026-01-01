@@ -8,17 +8,17 @@ jobs:
     runs-on: codeberg-tiny
     steps:
       - name: Checkout
-      uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Install Rust ( stable )
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        components: rustfmt, clippy
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
 
       - name: Cache cargo registry & build
-      uses: actions/cache@v4
-      with:
-        path: |
+        uses: actions/cache@v4
+        with:
+          path: |
           ~/.cargo/registry
           ~/.cargo/git
           target
