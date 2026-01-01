@@ -40,5 +40,40 @@ async fn create_and_update_profile(){
         }
         .data()
     };
-    let mut tx = Transaction
+    let mut tx = Transaction::new_with_payer(&[create_ix], Some(&[&payer, &user], recent_blockhash);
+    banks_client.process_transaction(tx).await.unwrap();
+    
+    let update_ix = Instruction{
+        program_id,
+        accounts:profiles::accounts::UpdateProfile{
+            profile: Pubkey::new_unique(),
+            user: user.pubkey(),
+            sytem_program:system_program::ID,
+    }
+    .to_account_metas(None),
+    data:profles::instruction::UpdateProfile{
+        name: "Alice Dev Updated".to_string(),
+        headline: "Blockchain Architect".to_string(),
+        bio: "Now working on decentralized finance".to_string(),
+    }
+    .data(),
+}:
+let mut tx = Transaction::new_with_payer(&[update_ix],Some(&payer.pubkey()));
+tx.sign(&[&payer, &user], recent_blockhash);
+banks_client.process_transaction(tx).await.unwrap();
+let updated_profile = banks_client.get_account_data(&Pubkey::new_unique())
+                                .await
+                                .unwrap();
+assert_eq!(updated_profile.name,
+           "Alice Dev Updated",
+           "Profile name did not update correctly");
+
+assert_eq!(updated_profile.headline,
+           "Blockchain Architect",
+           "Profile headline did not update correctly");
+assert_eq!(updated_profile.bio,
+             "Now working on decentralized finance",
+           "Profile bio did not update correctly");
+
 }
+
