@@ -3,10 +3,8 @@ pub mod profiles{
     use super::*;
     
     pub fn create_profile(
-        ctx: Context,
+        ctx: Context<CreateProfile>,
         name: String,
-        headline: String,
-        bio: String,
         headline: String,
         bio: String,
         ) -> Result<()>{
@@ -19,7 +17,7 @@ pub mod profiles{
         Ok(())
     }   
     pub fn update_profile(
-        ctx: Context,
+        ctx: Context<UpdateProfile>,
         name: String,
         headline: String,
         bio: String,
@@ -34,12 +32,12 @@ pub mod profiles{
 
     #[derive(Accounts)]
     #[instruction()]
-    pub struct CreateProfile<info>{ 
+    pub struct CreateProfile<'info>{ 
         #[account(
             init,
             payer = user,
             space = 8 + Profile::INIT_SPACE,
-            seeds = [b"profile",user.key(0.as_ref()],bump)]
+            seeds = [b"profile",user.key().as_ref()],bump)]
             pub profile: Account<'info,Profile>,
             #[account(mut)]
             pub user: Signer<'info>,
