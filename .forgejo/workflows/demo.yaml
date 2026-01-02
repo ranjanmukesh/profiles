@@ -22,13 +22,15 @@ jobs:
 
       - name: Install Solana CLI (latest v1 stable)
         run: |
-          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+          sh -c "$(curl -sSfL https://release.solana.com/stable/install) -- --no-modify-path"
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
 
       - name: Install Anchor (0.30.1 - latest as of 2026)
         run: |
           cargo install --git https://github.com/coral-xyz/anchor anchor-cli --locked --tag v0.30.1
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
       - name: Verify versions
         run: |
