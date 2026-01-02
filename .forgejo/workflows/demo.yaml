@@ -32,11 +32,6 @@ jobs:
           profile: minimal
           components: rustfmt, clippy
 
-      - name: Create Non-Ineractive CI Wallet
-        run: |
-          mkdir -p ~/.config/solana
-          solana-keygen new  --no-passphrase --silent --outfile ~/.config/solana/id.json
-
       - name: Verify versions
         run: |
           rustc --version
