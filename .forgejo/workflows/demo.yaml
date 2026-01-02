@@ -35,10 +35,6 @@ jobs:
           echo "keypair_path = \"$HOMNE/.config/solana/id.json\"" >> ~/.config/solana/cli/comfig.yml
           solana-keygen new  --no-passphrase --silent --outfile ~/.config/solana/id.json
 
-
-        run: |
-          solana-keygen new --no-passphrase --silent --no-outfile
-
       - name: Verify versions
         run: |
           rustc --version
