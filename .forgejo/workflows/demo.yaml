@@ -27,11 +27,9 @@ jobs:
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH 
 
       - name: Install rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: https://github.com/dtolnay/rust-toolchain@stable
         with:
           profile: minimal
-          toolchain: stable
-          override: true
           components: rustfmt, clippy
 
       - name: Create Non-Ineractive CI Wallet
