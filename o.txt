@@ -5,12 +5,17 @@
 ├── README.md
 ├── o.txt
 ├── package.json
-└── programs
-    ├── profiles
-    │   ├── Cargo.toml
-    │   └── src
-    │       └── lib.rs
-    └── tests
-        └── profile.rs
+├── programs
+│   ├── profiles
+│   │   ├── Cargo.toml
+│   │   └── src
+│   │       └── lib.rs
+│   └── tests
+│       ├── Cargo.toml
+│       └── profile.rs
+└── target
+    └── deploy
+        ├── profiles-keypair.json
+        └── profiles_tests-keypair.json
 
-4 directories, 9 files
+6 directories, 12 files
