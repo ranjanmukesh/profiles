@@ -48,6 +48,7 @@ jobs:
         run: |
           if [ -f Anchor.toml ]; then
             sed -i '/^\[programs\./,/^$/d' Anchor.toml || true
+            sed -i '/program_id/d' Anchor.toml || true
             echo "Cleaned existing program IDs from anchor toml"
           fi
 
