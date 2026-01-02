@@ -20,6 +20,11 @@ jobs:
           key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: cargo-${{ runner.os }}-
 
+      - name: Install dependencies (including entropy for Solana)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y haveged
+          sudo systemctl start haveged || sudo service haveged start
       - name: Install Solana CLI (latest stable, non-interactive)
         run: |
           curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash -s -- --no-modify-path
