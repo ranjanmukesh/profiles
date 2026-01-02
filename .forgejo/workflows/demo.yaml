@@ -25,17 +25,33 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y haveged
           sudo systemctl start haveged || sudo service haveged start
-      - name: Install Solana CLI (latest stable, non-interactive)
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash -s -- --no-modify-path
-          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH 
 
       - name: Install rust toolchain
         uses: https://github.com/dtolnay/rust-toolchain@stable
         with:
           profile: minimal
           components: rustfmt, clippy
+
+      - name: Install Solana CLI (latest stable, non-interactive)
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash -s -- --no-modify-path
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH 
+
+      - name: Install Anchor CLI (latest)
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+          avm install latest
+          avm use latest
+
+      - name: Synch Anchor Keys
+        run: |
+          anchor keys sync
+          git comfig user.email "mukeshranjan@disroot.org"
+          git config user.name "CI bot"
+          git add .
+          git commit -m "CI: Sync program ids [ci skip]" || echo "Nothing to commit"
+          git push || echo "Push faild"
 
       - name: Verify versions
         run: |
