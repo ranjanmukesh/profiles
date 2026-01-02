@@ -1,3 +1,4 @@
+use anchor_lang::prelude::*;
 #[program]
 pub mod profiles{
     use super::*;
@@ -11,7 +12,7 @@ pub mod profiles{
 
         let profile = &mut ctx.accounts.profile;
         require_keys_eq!(profile.owner,ctx.accounts.user.key(),ProfileError::Unauthorized);
-        profile.nme = name;
+        profile.name = name;
         profile.headline = headline;
         profile.bio = bio;
         Ok(())
