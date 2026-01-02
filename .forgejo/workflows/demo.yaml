@@ -26,7 +26,16 @@ jobs:
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH 
 
-      - name: Skip interactive keypair prompt(dummy generation)
+      - name: Create Non-Ineractive CI Wallet
+        run: |
+          mkdir -p ~/.config/solana
+          echo "[keypair]" > ~/.config/solana/cli/config.yml
+          echo "json_rpc_url = \"http://127.0.0.1:8899\"" >> ~/.config/solana/cli/config.yml
+          echo "websocket_url = \"ws://127.0.0.1:8900\"" >> ~/.config/solana/cli/cofig.yml
+          echo "keypair_path = \"$HOMNE/.config/solana/id.json\"" >> ~/.config/solana/cli/comfig.yml
+          solana-keygen new  --no-passphrase --silent --outfile ~/.config/solana/id.json
+
+
         run: |
           solana-keygen new --no-passphrase --silent --no-outfile
 
