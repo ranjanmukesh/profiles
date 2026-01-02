@@ -55,7 +55,7 @@ jobs:
       - name: Synch Anchor Keys
         run: |
           anchor keys sync
-          git comfig user.email "mukeshranjan@disroot.org"
+          git config user.email "mukeshranjan@disroot.org"
           git config user.name "CI bot"
           git add .
           git commit -m "CI: Sync program ids [ci skip]" || echo "Nothing to commit"
