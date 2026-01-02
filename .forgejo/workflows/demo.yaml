@@ -26,11 +26,6 @@ jobs:
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH 
 
-      - name: Install Anchor CLI (latest stable, v0.32.1 as of jan 2026)
-        run: |
-          cargo install --git https://github.com/solana-foundation/anchor acnchor-cli --locked --tag v0.32.1
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
       - name: Skip interactive keypair prompt(dummy generation)
         run: |
           solana-keygen new --no-passphrase --silent --no-outfile
