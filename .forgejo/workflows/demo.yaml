@@ -17,18 +17,49 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-        key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: cargo-${{ runner.os }}-
+          key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
 
-      - name: Install Solana CLI (latest v1 stable)
+      - name: Install dependencies (including entropy for Solana)
         run: |
-          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
-          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          sudo apt-get update
+          sudo apt-get install -y haveged
+          sudo systemctl start haveged || sudo service haveged start
 
-      - name: Install Anchor (0.30.1 - latest as of 2026)
+      - name: Install rust toolchain
+        uses: https://github.com/dtolnay/rust-toolchain@stable
+        with:
+          profile: minimal
+          components: rustfmt, clippy
+
+      - name: Install Solana CLI (latest stable, non-interactive)
         run: |
-          cargo install --git https://github.com/coral-xyz/anchor anchor-cli --locked --tag v0.30.1
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATh
+          curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash -s -- --no-modify-path
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH 
+
+      - name: Install Anchor CLI (latest)
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+          avm install latest
+          avm use latest
+
+      - name: Clean broken program ID from anchor toml
+        run: |
+          if [ -f Anchor.toml ]; then
+            sed -i '/^\[programs\./,/^$/d' Anchor.toml || true
+            sed -i '/program_id/d' Anchor.toml || true
+            echo "Cleaned existing program IDs from anchor toml"
+          fi
+
+      - name: Synch Anchor Keys
+        run: |
+          anchor keys sync
+          git config user.email "mukeshranjan@disroot.org"
+          git config user.name "CI bot"
+          git add .
+          git commit -m "CI: Sync program ids [ci skip]" || echo "Nothing to commit"
+          git push || echo "Push faild"
 
       - name: Verify versions
         run: |
@@ -37,5 +68,7 @@ jobs:
           solana --version
           anchor --version
 
-      - name: Test
-        run: cargo test-bpf -- --nocapture
+      - name: Build and Test 
+        run: |
+          anchor build
+          anchor test

@@ -1,6 +1,3 @@
-[programs.localnet]
-program_id = "Your_Program_ID"
-
 [provider]
 cluster = "localnet"
 wallet = "~/.config/solana/devnet.json"
