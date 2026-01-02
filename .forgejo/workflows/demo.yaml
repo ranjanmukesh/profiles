@@ -44,6 +44,13 @@ jobs:
           avm install latest
           avm use latest
 
+      - name: Clean broken program ID from anchor toml
+        run: |
+          if [ -f Anchor.toml ]; then
+            sed -i '/^\[programs\./,/^$/d' Anchor.toml || true
+            echo "Cleaned existing program IDs from anchor toml"
+          fi
+
       - name: Synch Anchor Keys
         run: |
           anchor keys sync
