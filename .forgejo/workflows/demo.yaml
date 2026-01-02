@@ -17,8 +17,8 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-        key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: cargo-${{ runner.os }}-
+          key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
 
       - name: Install Solana CLI (latest stable, non-interactive)
         run: |
