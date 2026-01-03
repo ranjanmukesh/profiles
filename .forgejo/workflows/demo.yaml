@@ -75,10 +75,8 @@ jobs:
             echo "$DEVNET_DEPLOY_KEY_BASE64" | base64 -d > ~/.config/solana/id.json
             echo "using ecisting devnet keypair from secret"
           else
-            if [ ! -f ~/.config/solana/id.json ]; then
-              solana-keygen new --no-passphrase -o ~/.config/solana/id.json
-              echo "generated new devnet keypair"
-            fi
+            echo "Error: DEVNET_DEPLOY_KEY_BASE64 secret is not set !"
+            exit 1
           fi
 
           solana config set --keypair ~/.config/solana/id.json
@@ -93,12 +91,12 @@ jobs:
           anchor build
           anchor test
 
-      - name: Show base64 key for secret
-        if: env.DEVNET_DEPLOY_KEY_BASE64 == ''
-        run: |
-          echo "============================"
-          cat ~/.config/solana/id.json | base64
-          echo "==========================="
+          #      - name: Show base64 key for secret
+          #        if: env.DEVNET_DEPLOY_KEY_BASE64 == ''
+          #        run: |
+          #          echo "============================"
+          #          cat ~/.config/solana/id.json | base64
+          #          echo "==========================="
 
   deploy-devnet:
     needs: build-and-test
