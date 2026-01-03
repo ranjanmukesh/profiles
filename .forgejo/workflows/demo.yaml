@@ -74,6 +74,7 @@ jobs:
         run: |
           mkdir -p ~/.config/solana
           if [ -n "$DEVNET_DEPLOY_KEY_BASE64" ]; then
+            echo "$DEVNET_DEPLOY_KEY_BASE64"
             echo "$DEVNET_DEPLOY_KEY_BASE64" | base64 -d > ~/.config/solana/id.json
             echo "using ecisting devnet keypair from secret"
           else
