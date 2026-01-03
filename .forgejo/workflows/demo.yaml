@@ -114,6 +114,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y haveged || true
+          sudo systemctl start haveged || true
 
       - name: Install Rust, Solana and Anchor
         run: |
