@@ -68,7 +68,73 @@ jobs:
           solana --version
           anchor --version
 
+      - name: Generate or load devnet keypair & sync
+        run: |
+          mkdir -p ~/.config/solana
+          if [ -n "$DEVNET_DEPLOY_KEY_BASE64" ]; then
+            echo "$DEVNET_DEPLOY_KEY_BASE64" | base64 -d > ~/.config/solana/id.json
+            echo "using ecisting devnet keypair from secret"
+          else
+            if [ ! -f ~/.config/solana/id.json ]; then
+              solana-keygen new --no-passphrase -o ~/.config/solana/id.json
+              echo "generated new devnet keypair"
+            fi
+          fi
+
+          solana config set --keypair ~/.config/solana/id.json
+          solana config set --url https://api.devnet.solana.com
+
+          solana airdrop 2 || true
+
+          anchor keys sync
+        
       - name: Build and Test 
         run: |
           anchor build
-          anchor test
+          anchor test --skip-local-validator
+
+      - name: Show base64 key for secret
+        if: env.DEVNET_DEPLOY_KEY_BASE64 == ''
+        run: |
+          echo "============================"
+          cat ~/.config/solana/id.json | base64
+          echo "==========================="
+
+  deploy-devnet:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: codeberg-medium
+    env:
+      DEVNET_DEPLOY_KEY_BASE64: ${{ secrets.DEVNET_DEPLOY_KEY_BASE64 }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y haveged || true
+
+      - name: Install Rust, Solana and Amchor
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source "$HOME/.cargo/env"
+          curl --proto '=https' --tlsv1.2 -sSfL https://release.anza.xyz/stable/install | sh
+        export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+        cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+        avm install latest
+        avm use latest
+
+      - name: Setup devnet wallet and deploy
+        run: |
+          mkdir -p ~/.config/solana
+          echo "$DEVNET_DEPLOY_KEY_BASE64" | base64 -d > ~/.config/solana/id.json
+          solana config set --keypair ~/.config/solana/id.json
+          solana config set --url https://api.devnet.solana.com
+          solana airdrop 2 || true
+          anchor deploy --provider.cluster devnet
+
+      - name: Deployment success
+        run: |
+          echo "Successfully deployed to devnet !"
+          anchor keys list
