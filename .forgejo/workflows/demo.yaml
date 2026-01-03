@@ -91,7 +91,7 @@ jobs:
       - name: Build and Test 
         run: |
           anchor build
-          anchor test --skip-local-validator
+          anchor test
 
       - name: Show base64 key for secret
         if: env.DEVNET_DEPLOY_KEY_BASE64 == ''
