@@ -6,7 +6,8 @@ on:
 jobs:
   build-and-test:
     runs-on: codeberg-medium
-    env: DEVNET_DEPLOY_KEY_BASE64: ${{ secrets.DEVNET_DEPLOY_KEY_BASE64 }}
+    env:
+      DEVNET_DEPLOY_KEY_BASE64: ${{ secrets.DEVNET_DEPLOY_KEY_BASE64 }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
