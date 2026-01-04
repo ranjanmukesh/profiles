@@ -1,9 +1,6 @@
 [provider]
 cluster = "localnet"
-wallet = "~/.config/solana/devnet.json"
+wallet = "~/.config/solana/id.json"
 
-[resgistry]
-url = "https://github.com/solana-labs/anchor"
-
-[anchor]
-lang_version = "0.23.0"
+[registry]
+url = "https://https://api.apr.dev"
