@@ -144,6 +144,17 @@ jobs:
         run: |
           mkdir -p ~/.config/solana
           printf '%s' "$DEVNET_DEPLOY_KEY_BASE64" | base64 -d > ~/.config/solana/id.json
+
+          echo "======= id json =========="
+          ls -l ~/.config/solana/id.json
+          echo "File size: $(wc -c < ~/.config/solana/id.json? bytes"
+          echo "First 100 bytes (hex):"
+          head -c 100 ~/.config/solana/id.json | xxd
+          echo "full file content"
+          cat ~/.config/solana/id.json || echo "cat failed not utf"
+          echo "valid json (jq check)" || echo "invalid json"
+        echo "===============================================":
+
           solana config set --keypair ~/.config/solana/id.json
           solana config set --url https://api.devnet.solana.com
           solana airdrop 2 || true
