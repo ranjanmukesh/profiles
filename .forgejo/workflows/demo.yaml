@@ -147,7 +147,7 @@ jobs:
       - name: Setup devnet wallet and deploy
         run: |
           mkdir -p ~/.config/solana
-          printf '%s' "$DEVNET_DEPLOY_KEY_BASE64" | base64 -d > ~/.config/solana/id.json
+          printf '%s' "$DEVNET_DEPLOY_KEY_BASE64" | tr -d ' \n\r\t' |  base64 -d > ~/.config/solana/id.json
 
           echo "======= id json =========="
           ls -l ~/.config/solana/id.json
