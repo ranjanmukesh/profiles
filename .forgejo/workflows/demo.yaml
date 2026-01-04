@@ -70,6 +70,12 @@ jobs:
           solana --version
           anchor --version
 
+      - name: Debug secret
+        run: |
+          echo "secret length : ${#DEVNET_DEPLOY_KEY_BASE64}"
+          echo "first 20 chars: ${DEVNET_DEPLOY_KEY_BASE64:0:20}"
+          echo "last 20 chars: ${DEVNET_DEPLOY_KEY_BASE64: -20}"
+
       - name: Load devnet keypair & sync
         run: |
           mkdir -p ~/.config/solana
