@@ -124,7 +124,7 @@ jobs:
 
       - name: Install jq
         run: |
-          sudo apt-get install -y jq
+          sudo apt-get install -y jq vim-common
 
       - name: Install rust toolchain
         uses: https://github.com/dtolnay/rust-toolchain@stable
@@ -152,6 +152,10 @@ jobs:
           echo "======= id json =========="
           ls -l ~/.config/solana/id.json
           echo "File size: $(wc -c < ~/.config/solana/id.json) bytes"
+          echo "First 50 characters "
+          head -c 50 ~/.config/solana/id.json || echo "can not read"
+          echo "last 50 characters"
+          tail -c 50 ~/.config/solana/id.json || echo "can not read"
           echo "First 100 bytes (hex):"
           head -c 100 ~/.config/solana/id.json | xxd
           echo "full file content"
