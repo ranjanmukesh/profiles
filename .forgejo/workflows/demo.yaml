@@ -151,7 +151,7 @@ jobs:
 
           echo "======= id json =========="
           ls -l ~/.config/solana/id.json
-          echo "File size: $(wc -c < ~/.config/solana/id.json? bytes"
+          echo "File size: $(wc -c < ~/.config/solana/id.json) bytes"
           echo "First 100 bytes (hex):"
           head -c 100 ~/.config/solana/id.json | xxd
           echo "full file content"
