@@ -1,0 +1,88 @@
+name: Rust + Anchor CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+jobs:
+  build-and-test:
+    runs-on: codeberg-medium
+    env:
+      DEVNET_KEY: ${{ secrets.DEVNET_KEY }}
+     
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Cargo registry + git + target
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Install dependencies (including entropy for Solana)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y haveged
+          sudo systemctl start haveged || sudo service haveged start
+
+      - name: Install rust toolchain
+        uses: https://github.com/dtolnay/rust-toolchain@stable
+        with:
+          profile: minimal
+          components: rustfmt, clippy
+
+      - name: Install Solana CLI (latest stable, non-interactive)
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash -s -- --no-modify-path
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH 
+
+      - name: Install Anchor CLI (latest)
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+          avm install latest
+          avm use latest
+
+      - name: Clean broken program ID from anchor toml
+        run: |
+          if [ -f Anchor.toml ]; then
+            sed -i '/^\[programs\./,/^$/d' Anchor.toml || true
+            sed -i '/program_id/d' Anchor.toml || true
+            echo "Cleaned existing program IDs from anchor toml"
+          fi
+
+      - name: Synch Anchor Keys
+        run: |
+          anchor keys sync
+          git config user.email "mukeshranjan@disroot.org"
+          git config user.name "CI bot"
+          git add .
+          git commit -m "CI: Sync program ids [ci skip]" || echo "Nothing to commit"
+          git push || echo "Push faild"
+
+      - name: Verify versions
+        run: |
+          rustc --version
+          cargo --version
+          solana --version
+          anchor --version
+
+      - name: Get base64 
+        run: |
+          mkdir -p ~/.config/solana
+          solana-keygen new --no-passphrase -o ~/.config/solana/id.json
+          echo "++++++++++++++++++++++++++++++++++++"
+          echo
+          base64 ~/.config/solana/id.json | tr -d '\n'
+          echo
+          echo "++++++++++++++++++++++++++++++++++++"
+          #          git add .
+          #          git commit -m "CI: Committing id json [ci skip]" || echo "Nothing to commit"
+          #          git push || echo "Push faild"
+
+
+
