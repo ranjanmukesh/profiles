@@ -1,4 +1,4 @@
-Markdown# Profiles 🦀⛓️
+# Profiles 🦀⛓️
 
 A Solana on-chain program for managing user profiles, built with **Anchor** (Rust).
 
