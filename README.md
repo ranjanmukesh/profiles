@@ -2,9 +2,8 @@
 
 **A Solana on-chain program for managing user profiles, built with Anchor (Rust).**
 
-This repository contains the complete code for the Solana program described in the DEV.to article:  
+This repository contains the complete code for the Solana program described in my DEV.to article:  
 **["Lessons from building a Solana project using iPhone"](https://dev.to/mukesh-ranjan-dev/lessons-from-building-a-solana-project-using-iphone-2ck3)**  
-by Mukesh Ranjan (published January 2025/2026).
 
 The article shares the full story of developing and deploying this exact program **entirely from an iPhone** (using the *ish* app for Alpine Linux emulation, external keyboard, Codeberg for version control, and Forgejo Actions for CI/CD) — after losing access to laptops due to hardware failures.
 
